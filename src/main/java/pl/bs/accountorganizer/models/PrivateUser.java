@@ -17,16 +17,16 @@ public class PrivateUser extends DetailedAccount{
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "private_user_login", referencedColumnName = "login")
-    private List<CompanyAccount> companyAccounts;
+    private List<PrivateAccount> privateAccounts;
 
     public PrivateUser() {
     }
 
-    public PrivateUser(String login, String name, String surname, String address, List<CompanyAccount> companyAccounts) {
+    public PrivateUser(String login, String name, String surname, String address, List<PrivateAccount> privateAccounts) {
         setLogin(login);
         this.name = name;
         this.surname = surname;
         this.address = address;
-        this.companyAccounts = companyAccounts;
+        this.privateAccounts = privateAccounts;
     }
 }
