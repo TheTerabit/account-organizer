@@ -23,4 +23,10 @@ public class Account {
     public Account() {
     }
 
+    public Account(String login, String id, String email, DetailedAccount detailedAccount) {
+        this.login = login;
+        this.id = id;
+        this.email = email;
+        this.detailedAccount = detailedAccount;
+    }
 }

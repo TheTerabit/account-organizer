@@ -6,4 +6,5 @@ import pl.bs.accountorganizer.models.Company;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, String> {
+    public Company getCompanyByNip(String nip);
 }

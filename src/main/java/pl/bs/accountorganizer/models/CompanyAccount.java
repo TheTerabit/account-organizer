@@ -22,4 +22,12 @@ public class CompanyAccount extends DetailedAccount {
     public CompanyAccount() {
     }
 
+    public CompanyAccount(String name, String surname, String phoneNumber1, String phoneNumber2, String address, String companyLogin) {
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber1 = phoneNumber1;
+        this.phoneNumber2 = phoneNumber2;
+        this.address = address;
+        this.companyLogin = companyLogin;
+    }
 }

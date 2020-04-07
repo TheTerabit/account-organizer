@@ -20,4 +20,9 @@ public class Company extends DetailedAccount{
     public Company() {
     }
 
+    public Company(String nip, String name, List<CompanyAccount> companyAccounts) {
+        this.nip = nip;
+        this.name = name;
+        this.companyAccounts = companyAccounts;
+    }
 }
