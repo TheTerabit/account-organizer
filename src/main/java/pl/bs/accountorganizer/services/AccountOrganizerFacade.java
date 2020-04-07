@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
-import pl.bs.accountorganizer.models.Account;
-import pl.bs.accountorganizer.models.Company;
-import pl.bs.accountorganizer.models.CompanyAccount;
-import pl.bs.accountorganizer.models.DetailedAccount;
+import pl.bs.accountorganizer.models.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +16,15 @@ public class AccountOrganizerFacade {
     private final AccountService accountService;
     private final CompanyService companyService;
     private final CompanyAccountService companyAccountService;
+    private final PrivateUserService privateUserService;
+    private final PrivateAccountService privateAccountService;
 
-    public AccountOrganizerFacade(AccountService accountService, CompanyService companyService, CompanyAccountService companyAccountService) {
+    public AccountOrganizerFacade(AccountService accountService, CompanyService companyService, CompanyAccountService companyAccountService, PrivateUserService privateUserService, PrivateAccountService privateAccountService) {
         this.accountService = accountService;
         this.companyService = companyService;
         this.companyAccountService = companyAccountService;
+        this.privateUserService = privateUserService;
+        this.privateAccountService = privateAccountService;
     }
 
     public List<Account> getAll() {
@@ -100,6 +101,37 @@ public class AccountOrganizerFacade {
 
 
     private void organizeAndCreatePersonalAccounts(AccountMsg accountMsg) {
+        if (privateUserExists(accountMsg))
+            createPrivateAccount(accountMsg);
+        else
+            createPrivateUserAndPrivateAccount(accountMsg);
+    }
+
+    private boolean privateUserExists(AccountMsg accountMsg) {
+        if (privateUserService.getByNameAndSurnameAndAddress(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress()) != null)
+            return true;
+        else
+            return false;
+    }
+
+    private void createPrivateAccount(AccountMsg accountMsg) {
+        PrivateAccount privateAccount = new PrivateAccount(
+                accountMsg.getLogin(),
+                accountMsg.getPhoneNumber1(),
+                accountMsg.getPhoneNumber2(),
+                privateUserService.getByNameAndSurnameAndAddress(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress()).getLogin());
+        privateAccountService.create(privateAccount);
+        createAccount(accountMsg, privateAccount);
+    }
+
+
+    private void createPrivateUserAndPrivateAccount(AccountMsg accountMsg) {
+        String id = generateNewId();
+        PrivateUser privateUser = new PrivateUser(id, accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress(), new ArrayList<>());
+        privateUserService.create(privateUser);
+        Account account = new Account(id, id, accountMsg.getEmail(), privateUser);
+        accountService.create(account);
+        createPrivateAccount(accountMsg);
     }
 
     private void createAccount(AccountMsg accountMsg, DetailedAccount detailedAccount) {
