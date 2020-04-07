@@ -4,7 +4,7 @@
 
 The application structurizes accounts in given JSON.
 
-### Before:
+### Input:
 
 ```
 [
@@ -55,7 +55,7 @@ The application structurizes accounts in given JSON.
 ]
 ```
 
-### After:
+### Output:
 
 ```
 [
