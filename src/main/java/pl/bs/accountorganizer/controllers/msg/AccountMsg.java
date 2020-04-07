@@ -21,7 +21,6 @@ public class AccountMsg {
     @JsonCreator
     public AccountMsg(@JsonProperty("name") String name,
                       @JsonProperty("surname") String surname,
-                      @JsonProperty("phoneNumber1") String phoneNumber,
                       @JsonProperty("nip") String nip,
                       @JsonProperty("companyName") String companyName,
                       @JsonProperty("email") String email,

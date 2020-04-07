@@ -6,6 +6,7 @@ import pl.bs.accountorganizer.models.Account;
 import pl.bs.accountorganizer.repositories.AccountRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 class AccountService {
@@ -21,7 +22,7 @@ class AccountService {
     }
 
     Account getById(String id) {
-        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Such account does not exist."));
+        return accountRepository.findById(id).orElse(null);
     }
 
     void create(Account account) {

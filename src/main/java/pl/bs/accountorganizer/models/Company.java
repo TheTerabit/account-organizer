@@ -20,7 +20,8 @@ public class Company extends DetailedAccount{
     public Company() {
     }
 
-    public Company(String nip, String name, List<CompanyAccount> companyAccounts) {
+    public Company(String login, String nip, String name, List<CompanyAccount> companyAccounts) {
+        setLogin(login);
         this.nip = nip;
         this.name = name;
         this.companyAccounts = companyAccounts;

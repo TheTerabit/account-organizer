@@ -16,7 +16,7 @@ public class Account {
     private String login;
     private String id;
     private String email;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="login", referencedColumnName = "login")
     private DetailedAccount detailedAccount;
 

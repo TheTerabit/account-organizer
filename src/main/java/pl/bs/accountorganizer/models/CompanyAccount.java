@@ -22,7 +22,8 @@ public class CompanyAccount extends DetailedAccount {
     public CompanyAccount() {
     }
 
-    public CompanyAccount(String name, String surname, String phoneNumber1, String phoneNumber2, String address, String companyLogin) {
+    public CompanyAccount(String login, String name, String surname, String phoneNumber1, String phoneNumber2, String address, String companyLogin) {
+        setLogin(login);
         this.name = name;
         this.surname = surname;
         this.phoneNumber1 = phoneNumber1;

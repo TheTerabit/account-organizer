@@ -66,6 +66,7 @@ public class AccountOrganizerFacade {
 
     private void createCompanyAccount(AccountMsg accountMsg) {
         CompanyAccount companyAccount = new CompanyAccount(
+                accountMsg.getLogin(),
                 accountMsg.getName(),
                 accountMsg.getSurname(),
                 accountMsg.getPhoneNumber1(),
@@ -77,10 +78,11 @@ public class AccountOrganizerFacade {
     }
 
     private void createCompanyAndCompanyAccount(AccountMsg accountMsg) {
-        Company company = new Company(accountMsg.getNip(), accountMsg.getCompanyName(), new ArrayList<>());
+        String id = generateNewId();
+        Company company = new Company(id ,accountMsg.getNip(), accountMsg.getCompanyName(), new ArrayList<>());
         companyService.create(company);
-        Account account = new Account(generateNewId(), generateNewId(), accountMsg.getEmail(), company);
-        createAccount(accountMsg, company);
+        Account account = new Account(id, id, accountMsg.getEmail(), company);
+        accountService.create(account);
         createCompanyAccount(accountMsg);
     }
 
