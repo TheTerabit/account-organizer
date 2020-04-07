@@ -1,8 +1,10 @@
 package pl.bs.accountorganizer.services;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.Account;
+import pl.bs.accountorganizer.models.DetailedAccount;
 import pl.bs.accountorganizer.repositories.AccountRepository;
 
 import java.util.List;
@@ -25,8 +27,18 @@ class AccountService {
         return accountRepository.findById(id).orElse(null);
     }
 
-    void create(Account account) {
+    Account create(AccountMsg accountMsg, DetailedAccount detailedAccount) {
+        //checkIfAccountExists().orElse(() -> throw new Exception())
+        Account account = new Account(accountMsg.getLogin(), accountMsg.getId(), accountMsg.getEmail(), detailedAccount);
         accountRepository.save(account);
+        return account;
+    }
+
+    Account create(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) {
+        //checkIfAccountExists().orElse(() -> throw new Exception())
+        Account account = new Account(id, id, accountMsg.getEmail(), detailedAccount);
+        accountRepository.save(account);
+        return account;
     }
 
     void update(String id, AccountMsg accountMsg) {
@@ -39,4 +51,17 @@ class AccountService {
     void delete(String id) {
         accountRepository.deleteById(id);
     }
+
+    String generateNewId() {
+        String newId = generateRandomString();
+        while (getById(newId) != null) {
+            newId = generateRandomString();
+        }
+        return newId;
+    }
+
+    private String generateRandomString() {
+        return RandomStringUtils.randomAlphanumeric(6);
+    }
+
 }

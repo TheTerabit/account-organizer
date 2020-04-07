@@ -1,13 +1,11 @@
 package pl.bs.accountorganizer.services;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,12 +29,12 @@ public class AccountOrganizerFacade {
         return accountService.getAll();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void organizeAndCreateAccounts(List<AccountMsg> accountMsgs) {
         accountMsgs.stream().forEach(accountMsg -> organizeAndCreate(accountMsg));
     }
 
-    private void organizeAndCreate(AccountMsg accountMsg) {
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    void organizeAndCreate(AccountMsg accountMsg) {
         if (accountMsgHasNip(accountMsg))
             organizeAndCreateCompanyAccount(accountMsg);
         else
@@ -51,93 +49,47 @@ public class AccountOrganizerFacade {
     }
 
     private void organizeAndCreateCompanyAccount(AccountMsg accountMsg) {
-        if (companyExists(accountMsg))
-            createCompanyAccount(accountMsg);
-        else
-            createCompanyAndCompanyAccount(accountMsg);
-    }
-
-
-    private boolean companyExists(AccountMsg accountMsg) {
-        if (companyService.getByNip(accountMsg.getNip()) != null)
-            return true;
-        else
-            return false;
-    }
-
-    private void createCompanyAccount(AccountMsg accountMsg) {
-        CompanyAccount companyAccount = new CompanyAccount(
-                accountMsg.getLogin(),
-                accountMsg.getName(),
-                accountMsg.getSurname(),
-                accountMsg.getPhoneNumber1(),
-                accountMsg.getPhoneNumber2(),
-                accountMsg.getAddress(),
-                companyService.getByNip(accountMsg.getNip()).getLogin());
-        companyAccountService.create(companyAccount);
-        createAccount(accountMsg, companyAccount);
-    }
-
-    private void createCompanyAndCompanyAccount(AccountMsg accountMsg) {
-        String id = generateNewId();
-        Company company = new Company(id ,accountMsg.getNip(), accountMsg.getCompanyName(), new ArrayList<>());
-        companyService.create(company);
-        Account account = new Account(id, id, accountMsg.getEmail(), company);
-        accountService.create(account);
+        if (companyNotExists(accountMsg))
+            createCompany(accountMsg);
         createCompanyAccount(accountMsg);
     }
 
-    private String generateNewId() {
-        String newId = generateRandomString();
-        while (accountService.getById(newId) != null) {
-            newId = generateRandomString();
-        }
-        return newId;
+    private boolean companyNotExists(AccountMsg accountMsg) {
+        return companyService.companyNotExists(accountMsg.getNip());
     }
 
-    private String generateRandomString() {
-        return RandomStringUtils.randomAlphanumeric(6);
+    private void createCompany(AccountMsg accountMsg) {
+        String id = accountService.generateNewId();
+        Company company = companyService.create(accountMsg, id);
+        accountService.create(accountMsg, company, id);
     }
 
+    private void createCompanyAccount(AccountMsg accountMsg) {
+        String companyLogin = companyService.getCompanyLoginByNip(accountMsg.getNip());
+        CompanyAccount companyAccount = companyAccountService.create(accountMsg, companyLogin);
+        accountService.create(accountMsg, companyAccount);
+    }
 
     private void organizeAndCreatePersonalAccounts(AccountMsg accountMsg) {
-        if (privateUserExists(accountMsg))
-            createPrivateAccount(accountMsg);
-        else
-            createPrivateUserAndPrivateAccount(accountMsg);
-    }
-
-    private boolean privateUserExists(AccountMsg accountMsg) {
-        if (privateUserService.getByNameAndSurnameAndAddress(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress()) != null)
-            return true;
-        else
-            return false;
-    }
-
-    private void createPrivateAccount(AccountMsg accountMsg) {
-        PrivateAccount privateAccount = new PrivateAccount(
-                accountMsg.getLogin(),
-                accountMsg.getPhoneNumber1(),
-                accountMsg.getPhoneNumber2(),
-                privateUserService.getByNameAndSurnameAndAddress(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress()).getLogin());
-        privateAccountService.create(privateAccount);
-        createAccount(accountMsg, privateAccount);
-    }
-
-
-    private void createPrivateUserAndPrivateAccount(AccountMsg accountMsg) {
-        String id = generateNewId();
-        PrivateUser privateUser = new PrivateUser(id, accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress(), new ArrayList<>());
-        privateUserService.create(privateUser);
-        Account account = new Account(id, id, accountMsg.getEmail(), privateUser);
-        accountService.create(account);
+        if (privateUserNotExists(accountMsg))
+            createPrivateUser(accountMsg);
         createPrivateAccount(accountMsg);
     }
 
-    private void createAccount(AccountMsg accountMsg, DetailedAccount detailedAccount) {
-        //checkIfAccountExists().orElse(() -> throw new Exception())
-        Account account = new Account(accountMsg.getLogin(), accountMsg.getId(), accountMsg.getEmail(), detailedAccount);
-        accountService.create(account);
-        //return account;
+    private boolean privateUserNotExists(AccountMsg accountMsg) {
+        return privateUserService.privateUserNotExists(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress());
     }
+
+    private void createPrivateUser(AccountMsg accountMsg) {
+        String id = accountService.generateNewId();
+        PrivateUser privateUser = privateUserService.create(accountMsg, id);
+        accountService.create(accountMsg, privateUser, id);
+    }
+
+    private void createPrivateAccount(AccountMsg accountMsg) {
+        String privateUserLogin = privateUserService.getPrivateUserLogin(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress());
+        PrivateAccount privateAccount = privateAccountService.create(accountMsg, privateUserLogin);
+        accountService.create(accountMsg, privateAccount);
+    }
+
 }
