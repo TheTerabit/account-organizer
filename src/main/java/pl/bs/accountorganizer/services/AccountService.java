@@ -8,7 +8,6 @@ import pl.bs.accountorganizer.models.DetailedAccount;
 import pl.bs.accountorganizer.repositories.AccountRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 class AccountService {
@@ -30,13 +29,34 @@ class AccountService {
     Account create(AccountMsg accountMsg, DetailedAccount detailedAccount) {
         //checkIfAccountExists().orElse(() -> throw new Exception())
         Account account = new Account(accountMsg.getLogin(), accountMsg.getId(), accountMsg.getEmail(), detailedAccount);
+        account.setPreviousEmail(getEmailByLogin(account));
+        expireEmail(accountMsg.getEmail());
         accountRepository.save(account);
         return account;
     }
 
+    private String getEmailByLogin(Account account) {
+        Account presentAccount = accountRepository.getByLogin(account.getLogin());
+        if (presentAccount == null)
+            return null;
+        else if (account.getEmail().equals(presentAccount.getEmail()))
+            return null;
+        else
+            return presentAccount.getEmail();
+    }
+
+    private void expireEmail(String email) {
+        accountRepository.findAll().stream()
+                .filter(account -> email.equals(account.getEmail()))
+                .forEach(account -> {
+                    account.setPreviousEmail(account.getEmail());
+                    account.setEmail(null);
+                    accountRepository.save(account);});
+    }
+
     Account create(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) {
         //checkIfAccountExists().orElse(() -> throw new Exception())
-        Account account = new Account(id, id, accountMsg.getEmail(), detailedAccount);
+        Account account = new Account(id, id, null/*accountMsg.getEmail()*/, detailedAccount);
         accountRepository.save(account);
         return account;
     }
