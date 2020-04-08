@@ -6,4 +6,7 @@ import pl.bs.accountorganizer.models.Account;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
+    public Account getById(String id);
+
+    void deleteByLogin(String login);
 }

@@ -48,8 +48,8 @@ class AccountService {
         accountRepository.save(account);
     }
 
-    void delete(String id) {
-        accountRepository.deleteById(id);
+    void delete(String login) {
+        accountRepository.deleteByLogin(login);
     }
 
     String generateNewId() {
@@ -62,6 +62,23 @@ class AccountService {
 
     private String generateRandomString() {
         return RandomStringUtils.randomAlphanumeric(6);
+    }
+
+    public boolean isLoginUpdated(String id, String login) {
+        if (id == null)
+            return false;
+        if (!login.equals(getLoginById(id)))
+            return true;
+        else
+            return false;
+    }
+
+     String getLoginById(String id) {
+        Account account = accountRepository.getById(id);
+        if (account == null)
+            return null;
+        else
+            return account.getLogin();
     }
 
 }

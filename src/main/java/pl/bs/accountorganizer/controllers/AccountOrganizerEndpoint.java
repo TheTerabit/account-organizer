@@ -1,5 +1,6 @@
 package pl.bs.accountorganizer.controllers;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.Account;
@@ -23,8 +24,14 @@ public class AccountOrganizerEndpoint {
     }
 
     @PostMapping
+    @Transactional
     public void organizeAndCreateAccounts(@RequestBody List<AccountMsg> accountMsgs) {
         accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs);
+    }
+
+    @PostMapping("/new")
+    public void createAccount(@RequestBody AccountMsg accountMsg) {
+        accountOrganizerFacade.organizeAndCreate(accountMsg);
     }
 
 }

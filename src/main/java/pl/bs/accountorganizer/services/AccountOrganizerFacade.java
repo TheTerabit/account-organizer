@@ -30,15 +30,49 @@ public class AccountOrganizerFacade {
     }
 
     public void organizeAndCreateAccounts(List<AccountMsg> accountMsgs) {
-        accountMsgs.stream().forEach(accountMsg -> organizeAndCreate(accountMsg));
+        accountMsgs.stream()
+                .sorted((accountMsg1, accountMsg2) -> compareNullFirst(accountMsg1.getId(), accountMsg2.getId()))
+                .forEach(accountMsg -> organizeAndCreate(accountMsg));
+    }
+
+    private int compareNullFirst(String id1, String id2) {
+        if ((id1 == null) && (id2 == null))
+            return 0;
+        else if (id1 == null)
+            return -1;
+        else if (id2 == null)
+            return 1;
+        else
+            return 0;
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    void organizeAndCreate(AccountMsg accountMsg) {
+    public void organizeAndCreate(AccountMsg accountMsg) {
+        if (isLoginUpdated(accountMsg))
+            updateAccount(accountMsg);
+        createNewAccount(accountMsg);
+
+    }
+
+    public void createNewAccount(AccountMsg accountMsg) {
         if (accountMsgHasNip(accountMsg))
             organizeAndCreateCompanyAccount(accountMsg);
         else
             organizeAndCreatePersonalAccounts(accountMsg);
+    }
+
+
+    private boolean isLoginUpdated(AccountMsg accountMsg) {
+        return accountService.isLoginUpdated(accountMsg.getId(), accountMsg.getLogin());
+    }
+
+    private void updateAccount(AccountMsg accountMsg) {
+        deleteAccount(accountMsg);
+        createNewAccount(accountMsg);
+    }
+
+    private void deleteAccount(AccountMsg accountMsg) {
+        accountService.delete(accountService.getLoginById(accountMsg.getId()));
     }
 
     private boolean accountMsgHasNip(AccountMsg accountMsg) {
