@@ -24,7 +24,6 @@ public class AccountOrganizerEndpoint {
     }
 
     @PostMapping
-    @Transactional
     public void organizeAndCreateAccounts(@RequestBody List<AccountMsg> accountMsgs) {
         accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs);
     }
