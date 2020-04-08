@@ -2,7 +2,7 @@
 
 ## Java / Spring / JPA
 
-The application structurizes accounts in given JSON.
+The application structurizes accounts in given JSON. (Allegro recruitment task)
 
 ### Structure
 ![UML](https://github.com/TheTerabit/account-organizer/blob/master/account_organizer_uml.png)
