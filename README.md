@@ -4,6 +4,9 @@
 
 The application structurizes accounts in given JSON.
 
+### Structure
+![UML](https://github.com/TheTerabit/account-organizer/blob/master/account_organizer_uml.png)
+
 ### Input:
 
 ```
