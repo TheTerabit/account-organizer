@@ -9,10 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"name", "surname", "address"})})
 public class PrivateUser extends DetailedAccount{
 
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "address")
     private String address;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

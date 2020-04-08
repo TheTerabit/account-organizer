@@ -5,8 +5,6 @@ import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.CompanyAccount;
 import pl.bs.accountorganizer.repositories.CompanyAccountRepository;
 
-import java.util.List;
-
 @Service
 class CompanyAccountService {
 
@@ -14,14 +12,6 @@ class CompanyAccountService {
 
     CompanyAccountService(CompanyAccountRepository companyAccountRepository) {
         this.companyAccountRepository = companyAccountRepository;
-    }
-
-    List<CompanyAccount> getAll() {
-        return companyAccountRepository.findAll();
-    }
-
-    CompanyAccount getById(String id) {
-        return companyAccountRepository.findById(id).orElseThrow(() -> new RuntimeException("Such companyAccount does not exist."));
     }
 
     CompanyAccount create(AccountMsg accountMsg, String companyLogin) {
@@ -35,14 +25,5 @@ class CompanyAccountService {
                 companyLogin);
         companyAccountRepository.save(companyAccount);
         return companyAccount;
-    }
-
-    void update(String id, CompanyAccount companyAccount) {
-        companyAccount.setLogin(id);
-        companyAccountRepository.save(companyAccount);
-    }
-
-    void delete(String id) {
-        companyAccountRepository.deleteById(id);
     }
 }

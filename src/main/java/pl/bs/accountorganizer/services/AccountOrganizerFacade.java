@@ -52,16 +52,7 @@ public class AccountOrganizerFacade {
         if (isLoginUpdated(accountMsg))
             updateAccount(accountMsg);
         createNewAccount(accountMsg);
-
     }
-
-    public void createNewAccount(AccountMsg accountMsg) {
-        if (accountMsgHasNip(accountMsg))
-            organizeAndCreateCompanyAccount(accountMsg);
-        else
-            organizeAndCreatePersonalAccounts(accountMsg);
-    }
-
 
     private boolean isLoginUpdated(AccountMsg accountMsg) {
         return accountService.isLoginUpdated(accountMsg.getId(), accountMsg.getLogin());
@@ -74,6 +65,13 @@ public class AccountOrganizerFacade {
 
     private void deleteAccount(AccountMsg accountMsg) {
         accountService.delete(accountService.getLoginById(accountMsg.getId()));
+    }
+
+    private void createNewAccount(AccountMsg accountMsg) {
+        if (accountMsgHasNip(accountMsg))
+            organizeAndCreateCompanyAccount(accountMsg);
+        else
+            organizeAndCreatePersonalAccounts(accountMsg);
     }
 
     private boolean accountMsgHasNip(AccountMsg accountMsg) {
@@ -96,7 +94,7 @@ public class AccountOrganizerFacade {
     private void createCompany(AccountMsg accountMsg) {
         String id = accountService.generateNewId();
         Company company = companyService.create(accountMsg, id);
-        accountService.create(accountMsg, company, id);
+        accountService.createParent(accountMsg, company, id);
     }
 
     private void createCompanyAccount(AccountMsg accountMsg) {
@@ -118,7 +116,7 @@ public class AccountOrganizerFacade {
     private void createPrivateUser(AccountMsg accountMsg) {
         String id = accountService.generateNewId();
         PrivateUser privateUser = privateUserService.create(accountMsg, id);
-        accountService.create(accountMsg, privateUser, id);
+        accountService.createParent(accountMsg, privateUser, id);
     }
 
     private void createPrivateAccount(AccountMsg accountMsg) {

@@ -22,12 +22,7 @@ class AccountService {
         return accountRepository.findAll();
     }
 
-    Account getById(String id) {
-        return accountRepository.findById(id).orElse(null);
-    }
-
     Account create(AccountMsg accountMsg, DetailedAccount detailedAccount) {
-        //checkIfAccountExists().orElse(() -> throw new Exception())
         Account account = new Account(accountMsg.getLogin(), accountMsg.getId(), accountMsg.getEmail(), detailedAccount);
         account.setPreviousEmail(getEmailByLogin(account));
         expireEmail(accountMsg.getEmail());
@@ -48,24 +43,19 @@ class AccountService {
     private void expireEmail(String email) {
         accountRepository.findAll().stream()
                 .filter(account -> email.equals(account.getEmail()))
-                .forEach(account -> {
-                    account.setPreviousEmail(account.getEmail());
-                    account.setEmail(null);
-                    accountRepository.save(account);});
+                .forEach(account -> setEmailAsPrevious(account));
     }
 
-    Account create(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) {
-        //checkIfAccountExists().orElse(() -> throw new Exception())
+    private void setEmailAsPrevious(Account account) {
+        account.setPreviousEmail(account.getEmail());
+        account.setEmail(null);
+        accountRepository.save(account);
+    }
+
+    Account createParent(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) {
         Account account = new Account(id, id, null/*accountMsg.getEmail()*/, detailedAccount);
         accountRepository.save(account);
         return account;
-    }
-
-    void update(String id, AccountMsg accountMsg) {
-        Account account = new Account();
-        account.setId(id);
-        //TODO: initialize Account object
-        accountRepository.save(account);
     }
 
     void delete(String login) {
@@ -84,7 +74,11 @@ class AccountService {
         return RandomStringUtils.randomAlphanumeric(6);
     }
 
-    public boolean isLoginUpdated(String id, String login) {
+    private Account getById(String id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
+    boolean isLoginUpdated(String id, String login) {
         if (id == null)
             return false;
         if (!login.equals(getLoginById(id)))

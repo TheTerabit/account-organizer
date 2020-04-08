@@ -14,6 +14,7 @@ public class Account {
     @Id
     @Column(name = "login")
     private String login;
+    @Column(unique=true)
     private String id;
     private String email;
     private String previousEmail;

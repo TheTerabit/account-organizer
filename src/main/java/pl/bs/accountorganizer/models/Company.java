@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 public class Company extends DetailedAccount{
 
+    @Column(unique=true)
     private String nip;
     private String name;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
