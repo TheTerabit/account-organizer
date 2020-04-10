@@ -29,6 +29,7 @@ public class AccountOrganizerFacade {
         return accountService.getAll();
     }
 
+    @Transactional
     public void organizeAndCreateAccounts(List<AccountMsg> accountMsgs) {
         accountMsgs.stream()
                 .sorted((accountMsg1, accountMsg2) -> compareNullFirst(accountMsg1.getId(), accountMsg2.getId()))
