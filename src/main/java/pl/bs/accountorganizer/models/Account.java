@@ -31,4 +31,5 @@ public class Account {
         this.email = email;
         this.detailedAccount = detailedAccount;
     }
+
 }

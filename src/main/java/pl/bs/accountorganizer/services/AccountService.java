@@ -75,7 +75,7 @@ class AccountService {
     }
 
     private Account getById(String id) {
-        return accountRepository.findById(id).orElse(null);
+        return accountRepository.getById(id);//.orElse(null);
     }
 
     boolean isLoginUpdated(String id, String login) {
@@ -88,7 +88,7 @@ class AccountService {
     }
 
      String getLoginById(String id) {
-        Account account = accountRepository.getById(id);
+        Account account = getById(id);
         if (account == null)
             return null;
         else

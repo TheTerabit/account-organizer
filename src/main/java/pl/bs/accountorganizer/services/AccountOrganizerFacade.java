@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,7 +61,7 @@ public class AccountOrganizerFacade {
 
     private void updateAccount(AccountMsg accountMsg) {
         deleteAccount(accountMsg);
-        createNewAccount(accountMsg);
+        //createNewAccount(accountMsg);
     }
 
     private void deleteAccount(AccountMsg accountMsg) {
@@ -101,6 +102,7 @@ public class AccountOrganizerFacade {
         String companyLogin = companyService.getCompanyLoginByNip(accountMsg.getNip());
         CompanyAccount companyAccount = companyAccountService.create(accountMsg, companyLogin);
         accountService.create(accountMsg, companyAccount);
+
     }
 
     private void organizeAndCreatePersonalAccounts(AccountMsg accountMsg) {
@@ -117,12 +119,14 @@ public class AccountOrganizerFacade {
         String id = accountService.generateNewId();
         PrivateUser privateUser = privateUserService.create(accountMsg, id);
         accountService.createParent(accountMsg, privateUser, id);
+
     }
 
     private void createPrivateAccount(AccountMsg accountMsg) {
         String privateUserLogin = privateUserService.getPrivateUserLogin(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress());
         PrivateAccount privateAccount = privateAccountService.create(accountMsg, privateUserLogin);
         accountService.create(accountMsg, privateAccount);
+
     }
 
 }

@@ -7,6 +7,7 @@ import pl.bs.accountorganizer.models.Company;
 import pl.bs.accountorganizer.repositories.CompanyRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 class CompanyService {
@@ -36,5 +37,9 @@ class CompanyService {
 
     private String normalizeNip(String nip) {
         return nip.replaceAll("-","");
+    }
+
+    List<Company> getAll(){
+        return companyRepository.findAll();
     }
 }
