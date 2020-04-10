@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +29,6 @@ public class AccountOrganizerFacade {
         return accountService.getAll();
     }
 
-    @Transactional
     public void organizeAndCreateAccounts(List<AccountMsg> accountMsgs) {
         accountMsgs.stream()
                 .sorted((accountMsg1, accountMsg2) -> compareNullFirst(accountMsg1.getId(), accountMsg2.getId()))
@@ -50,18 +48,22 @@ public class AccountOrganizerFacade {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void organizeAndCreate(AccountMsg accountMsg) {
+        validate(accountMsg);
         if (isLoginUpdated(accountMsg))
-            updateAccount(accountMsg);
+            deleteAccount(accountMsg);
         createNewAccount(accountMsg);
+    }
+
+    private void validate(AccountMsg accountMsg) {
+        if(accountMsg.getLogin() == null)
+            throw new BadRequestException("Login can not be null.");
+        if((accountMsg.getNip() == null) && ((accountMsg.getName() == null) || (accountMsg.getSurname() == null)||(accountMsg.getAddress() == null))) {
+            throw new BadRequestException("User account can not be created because of missing data.");
+        }
     }
 
     private boolean isLoginUpdated(AccountMsg accountMsg) {
         return accountService.isLoginUpdated(accountMsg.getId(), accountMsg.getLogin());
-    }
-
-    private void updateAccount(AccountMsg accountMsg) {
-        deleteAccount(accountMsg);
-        //createNewAccount(accountMsg);
     }
 
     private void deleteAccount(AccountMsg accountMsg) {
@@ -102,7 +104,6 @@ public class AccountOrganizerFacade {
         String companyLogin = companyService.getCompanyLoginByNip(accountMsg.getNip());
         CompanyAccount companyAccount = companyAccountService.create(accountMsg, companyLogin);
         accountService.create(accountMsg, companyAccount);
-
     }
 
     private void organizeAndCreatePersonalAccounts(AccountMsg accountMsg) {
@@ -119,14 +120,12 @@ public class AccountOrganizerFacade {
         String id = accountService.generateNewId();
         PrivateUser privateUser = privateUserService.create(accountMsg, id);
         accountService.createParent(accountMsg, privateUser, id);
-
     }
 
     private void createPrivateAccount(AccountMsg accountMsg) {
         String privateUserLogin = privateUserService.getPrivateUserLogin(accountMsg.getName(), accountMsg.getSurname(), accountMsg.getAddress());
         PrivateAccount privateAccount = privateAccountService.create(accountMsg, privateUserLogin);
         accountService.create(accountMsg, privateAccount);
-
     }
 
 }

@@ -87,6 +87,80 @@ class AccountOrganizerFacadeTest {
         assertDoesNotThrow(() -> accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs));
         verify(accountService, times(2)).create(any(AccountMsg.class), any(DetailedAccount.class));
         verify(accountService, times(1)).createParent(any(AccountMsg.class), any(DetailedAccount.class), eq("COM_ID"));
+    }
+
+    @Test
+    void organizeAndCreateAccounts_NoLoginInRequest_SholudThrow400() {
+        //given
+        List<AccountMsg> accountMsgs = new ArrayList<>();
+        AccountMsg accountMsg = new AccountMsg(
+                "Pawel",
+                "Korba",
+                "1234567890",
+                "Korbex sp. z o. o.",
+                "maluch126p@korbex.pl",
+                "111111111",
+                "222222222",
+                null,
+                "000001",
+                "ul. Zielona 2/4, 00-123 Warszawa");
+        accountMsgs.add(accountMsg);
+
+        //when
+
+        //then
+        RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs));
+        assertEquals("Login can not be null.", exception.getMessage());
 
     }
+
+    @Test
+    void organizeAndCreate_NoLoginInRequest_SholudThrow400() {
+        //given
+        List<AccountMsg> accountMsgs = new ArrayList<>();
+        AccountMsg accountMsg = new AccountMsg(
+                "Pawel",
+                "Korba",
+                "1234567890",
+                "Korbex sp. z o. o.",
+                "maluch126p@korbex.pl",
+                "111111111",
+                "222222222",
+                null,
+                "000001",
+                "ul. Zielona 2/4, 00-123 Warszawa");
+        accountMsgs.add(accountMsg);
+
+        //when
+
+        //then
+        RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreate(accountMsg));
+        assertEquals("Login can not be null.", exception.getMessage());
+    }
+
+    @Test
+    void organizeAndCreateAccounts_MissingAddressInRequest_SholudThrow400() {
+        //given
+        List<AccountMsg> accountMsgs = new ArrayList<>();
+        AccountMsg accountMsg = new AccountMsg(
+                "Pawel",
+                "Korba",
+                null,
+                null,
+                "maluch126p@korbex.pl",
+                "111111111",
+                "222222222",
+                "maluch126p",
+                "000001",
+                null);
+        accountMsgs.add(accountMsg);
+
+        //when
+
+        //then
+        RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs));
+        assertEquals("User account can not be created because of missing data.", exception.getMessage());
+
+    }
+
 }
