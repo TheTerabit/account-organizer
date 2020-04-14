@@ -1,7 +1,6 @@
 package pl.bs.accountorganizer.services;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.*;
@@ -29,7 +28,7 @@ public class AccountOrganizerFacade {
         return accountService.getAll();
     }
 
-    @Transactional
+   @Transactional
     public void organizeAndCreateAccounts(List<AccountMsg> accountMsgs) {
         accountMsgs.stream()
                 .sorted((accountMsg1, accountMsg2) -> compareNullFirst(accountMsg1.getId(), accountMsg2.getId()))
@@ -47,7 +46,7 @@ public class AccountOrganizerFacade {
             return 0;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void organizeAndCreate(AccountMsg accountMsg) {
         validate(accountMsg);
         if (isLoginUpdated(accountMsg))
@@ -57,9 +56,9 @@ public class AccountOrganizerFacade {
 
     private void validate(AccountMsg accountMsg) {
         if(accountMsg.getLogin() == null)
-            throw new BadRequestException("Login can not be null.");
+            throw new BadRequestException("Login can not be null. New structure of posted accounts not created.");
         if((accountMsg.getNip() == null) && ((accountMsg.getName() == null) || (accountMsg.getSurname() == null)||(accountMsg.getAddress() == null))) {
-            throw new BadRequestException("User account can not be created because of missing data.");
+            throw new BadRequestException("User account can not be created because of missing data in account: " + accountMsg.getLogin() + ". New structure of posted accounts not created.");
         }
     }
 
