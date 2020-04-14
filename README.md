@@ -11,7 +11,7 @@ The application structurizes accounts in given JSON. (Allegro recruitment task)
 | Request type | Body | URL | Description |
 | --- | --- | --- | --- |
 | ```POST``` | JSON array | https://account-organizer.herokuapp.com/ | Insert multiple accounts. |
-| ```POST``` | single JSON | https://account-organizer.herokuapp.com/new | Insert new account. |
+| ```POST``` | JSON | https://account-organizer.herokuapp.com/new | Insert new account. |
 | ```GET``` | | https://account-organizer.herokuapp.com/ | List the results. |
 
 ### Here is an example of building new structure of accounts:
