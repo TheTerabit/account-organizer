@@ -8,12 +8,15 @@ The application structurizes accounts in given JSON. (Allegro recruitment task)
 ![UML](https://github.com/TheTerabit/account-organizer/blob/master/account_organizer_uml.png)
 
 ## Input:
-
-POST list of objects here "/" or a single JSON here "/new"
+| Request type | Body | URL | Description |
+| --- | --- | --- | --- |
+| ```POST``` | JSON array | https://account-organizer.herokuapp.com/ | Insert multiple accounts. |
+| ```POST``` | single JSON | https://account-organizer.herokuapp.com/new | Insert new account. |
+| ```GET``` | | https://account-organizer.herokuapp.com/ | List the results. |
 
 ### Here is an example of building new structure of accounts:
 
-Two accounts are created: a new business account for Jan and an account for his company (id and login were randomly generated for Kowalstwo.com account, email is not assigned too).
+Two accounts are created: a new business account for ```Jan``` and an account for his company (id and login were randomly generated for ```Kowalstwo.com``` account, email is not assigned too).
 ```
 {
     "name": "Jan",
@@ -29,7 +32,7 @@ Two accounts are created: a new business account for Jan and an account for his 
 }
 ```
 
-Account created for Paweł. This account is referenced to the previously created Kowalstwo.com's account. Notice different NIP types.
+Account created for ```Paweł```. This account is referenced to the previously created ```Kowalstwo.com's``` account. Notice different NIP types.
 ```
 {
     "name": "Paweł",
@@ -45,7 +48,7 @@ Account created for Paweł. This account is referenced to the previously created
 }
 ```
 
-Paweł updated his login. The account is found by its ID.
+```Paweł``` updated his login. The account is found by its ID.
 ```
 {
     "name": "Paweł",
@@ -61,7 +64,7 @@ Paweł updated his login. The account is found by its ID.
 }
 ```
 
-There is no NIP in this request: new private user account created for Bartol and a parent user account similar to previously created company account. Each private user is identified by his name, surname and address.
+There is no NIP in this request: new private user account created for ```Bartol``` and a parent user account similar to previously created company account. Each private user is identified by his name, surname and address.
 ```
 {
     "name": "Bartol",
@@ -75,7 +78,7 @@ There is no NIP in this request: new private user account created for Bartol and
 }
 ```
 
-Another private account created for Bartol (different login, ID and email).
+Another private account created for ```Bartol``` (different login, ID and email).
 ```
 {
     "name": "Bartol",
@@ -102,7 +105,7 @@ Duplicated account without ID. Nothing happens.
 }
 ```
 
-New company and company account. It 'steals' email from Jan Kowalski (now jan.kowalski@gmail.com is assinged to Andrzej as current email and to Jan Kowalski as previous email).
+New company and company account. It 'steals' email from ```Jan Kowalski``` (now jan.kowalski@gmail.com is assinged to ```Andrzej``` as current email and to ```Jan Kowalski``` as previous email).
 ```
 {
     "name": "Andrzej",
