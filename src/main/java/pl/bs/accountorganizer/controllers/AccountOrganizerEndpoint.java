@@ -1,6 +1,5 @@
 package pl.bs.accountorganizer.controllers;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import pl.bs.accountorganizer.controllers.msg.AccountMsg;
 import pl.bs.accountorganizer.models.Account;

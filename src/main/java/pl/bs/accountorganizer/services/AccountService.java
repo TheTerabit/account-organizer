@@ -52,7 +52,7 @@ class AccountService {
         accountRepository.save(account);
     }
 
-    Account createParent(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) {
+    Account createParent(AccountMsg accountMsg, DetailedAccount detailedAccount, String id) { //should be implemented depending on business logic (how parent account should be created)
         Account account = new Account(id, id, null/*accountMsg.getEmail()*/, detailedAccount);
         accountRepository.save(account);
         return account;
@@ -87,7 +87,7 @@ class AccountService {
             return false;
     }
 
-     String getLoginById(String id) {
+    String getLoginById(String id) {
         Account account = getById(id);
         if (account == null)
             return null;

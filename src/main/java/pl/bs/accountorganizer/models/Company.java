@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Company extends DetailedAccount{
+public class Company extends DetailedAccount {
 
     @Column(unique=true)
     private String nip;

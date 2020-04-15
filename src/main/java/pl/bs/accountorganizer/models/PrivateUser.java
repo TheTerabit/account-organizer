@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = {"name", "surname", "address"})})
-public class PrivateUser extends DetailedAccount{
+public class PrivateUser extends DetailedAccount {
 
     @Column(name = "name")
     private String name;

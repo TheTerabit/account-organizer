@@ -110,7 +110,7 @@ class AccountOrganizerFacadeTest {
 
         //then
         RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs));
-        assertEquals("Login can not be null.", exception.getMessage());
+        assertEquals("Login can not be null. New structure of posted accounts not created.", exception.getMessage());
 
     }
 
@@ -135,7 +135,7 @@ class AccountOrganizerFacadeTest {
 
         //then
         RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreate(accountMsg));
-        assertEquals("Login can not be null.", exception.getMessage());
+        assertEquals("Login can not be null. New structure of posted accounts not created.", exception.getMessage());
     }
 
     @Test
@@ -159,8 +159,6 @@ class AccountOrganizerFacadeTest {
 
         //then
         RuntimeException exception = assertThrows(BadRequestException.class, () -> accountOrganizerFacade.organizeAndCreateAccounts(accountMsgs));
-        assertEquals("User account can not be created because of missing data.", exception.getMessage());
-
+        assertEquals("User account can not be created because of missing data in account: maluch126p. New structure of posted accounts not created.", exception.getMessage());
     }
-
 }

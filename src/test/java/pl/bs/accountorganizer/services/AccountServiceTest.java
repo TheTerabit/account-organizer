@@ -125,7 +125,6 @@ class AccountServiceTest {
         assertEquals(account.getId(), result.getId());
         assertEquals(account.getDetailedAccount(), result.getDetailedAccount());
 
-
     }
 
 

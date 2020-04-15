@@ -16,7 +16,11 @@ public class AccountOrganizerFacade {
     private final PrivateUserService privateUserService;
     private final PrivateAccountService privateAccountService;
 
-    public AccountOrganizerFacade(AccountService accountService, CompanyService companyService, CompanyAccountService companyAccountService, PrivateUserService privateUserService, PrivateAccountService privateAccountService) {
+    public AccountOrganizerFacade(AccountService accountService,
+                                  CompanyService companyService,
+                                  CompanyAccountService companyAccountService,
+                                  PrivateUserService privateUserService,
+                                  PrivateAccountService privateAccountService) {
         this.accountService = accountService;
         this.companyService = companyService;
         this.companyAccountService = companyAccountService;
